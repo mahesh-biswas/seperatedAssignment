@@ -11,16 +11,20 @@ public with sharing class AccountControllerExtension {
         this.toggle = False;
         System.debug('toggle value: '+toggle);
         this.accountObject = [
-                                SELECT  Name
-                                        ,AccountNumber
-                                        ,Phone
-                                        ,Industry
-                                        ,Description
-                                        ,Type
-                                FROM    Account
-                                WHERE   Id = :accountObject.Id
-                                LIMIT   1
-                            ];
+            SELECT
+                Name,
+                AccountNumber,
+                Phone,
+                Industry,
+                Description,
+                Type
+            FROM
+                Account
+            WHERE
+                Id = :accountObject.Id
+            LIMIT
+                1
+        ];
         // this.attachmentList = [SELECT Id,Name,ParentId FROM Attachment Where ParentId = :accountObject.Id];
     }
     public PageReference goToEditPage(){
