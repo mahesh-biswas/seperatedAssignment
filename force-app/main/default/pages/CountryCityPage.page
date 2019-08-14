@@ -1,0 +1,46 @@
+<apex:page controller="CountryCityPageController" language="{!lang}">
+    <apex:pageBlock >
+        <apex:form >
+            Select Language({!lang}):
+            <apex:selectList title="Select Language" multiselect="false" size="1" value="{!language}">
+                    <apex:selectOptions value="{!LangItems}" />
+            </apex:selectList>
+            <apex:commandButton value="Change Language!" action="{!updateLanguage}" oncomplete="location.reload()"/>
+            <hr/>
+            <apex:pageBlockSection >
+                <apex:selectList title="Select Country:" multiselect="false" value="{!country}" size="1" label="Select Country:">
+                    <apex:selectOptions value="{!CountryItems}" />
+                </apex:selectList>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection id="output" columns="1">
+            <!-- <apex:outputPanel id="output"> -->
+                <apex:pageBlockSection rendered="{!CityReady}" columns="1">
+                    <!-- <apex:actionSupport reRender="countryAndCity"> -->
+                    <apex:selectList title="Select City:" multiselect="false" value="{!city}" size="1" label="Select City:">
+                        <apex:selectOptions value="{!CityItems}"/>
+                    </apex:selectList>
+                    <!-- </apex:actionSupport> -->
+                    <code>{!country} and {!city}</code>
+                </apex:pageBlockSection>
+            </apex:pageBlockSection>
+            <apex:commandButton reRender="output" value="Select Country and City"/>
+        </apex:form>
+        <apex:form >
+            <apex:pageBlock id="student_form">
+                <apex:pageBlockSection columns="2" rendered="True" collapsible="False">
+                    <apex:facet name="header">Student Registeration Form</apex:facet>
+                    <apex:inputField value="{!student.Name}"/>
+                    <apex:inputField value="{!student.Course_Applying_for__c}"/>
+                    <apex:inputField value="{!student.Gender__c}"/>
+                    <apex:inputField value="{!student.S_S_C__c}"/>
+                    <apex:inputField value="{!student.H_S_C__c}"/>
+                    <apex:inputField value="{!student.Country__c}"/>
+                    <apex:inputField value="{!student.State__c}"/>
+                    <apex:inputField value="{!student.City__c}"/>
+                    <apex:inputField value="{!student.Roll_number__c}"/>
+                    <apex:commandButton value="SUBMIT" action="{!submit}" oncomplete="alert('{!$Label.Admission_Success}')" reRender="student_form" />
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:form>
+    </apex:pageBlock>
+</apex:page>

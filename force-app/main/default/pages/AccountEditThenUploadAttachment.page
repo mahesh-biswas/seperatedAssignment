@@ -1,0 +1,45 @@
+<apex:page standardController="Account" extensions="AccountControllerExtension">
+    <apex:form >
+        <apex:messages />
+        <apex:message />
+        <apex:outputPanel id="detailEdit">
+            <apex:pageBlock rendered="{! NOT(toggle)}">
+                <!--<apex:detail subject="{!Account.Id}"  relatedList="False" inlineEdit="True" />-->
+                <apex:pageBlockSection columns="2">
+                    Edit Account Detail:
+                    <apex:inputField value="{!accountObject.Name}" label="Name" />
+                    <apex:inputField value="{!accountObject.AccountNumber}"/>
+                    <apex:inputField value="{!accountObject.Phone}"/>
+                    <apex:inputField value="{!accountObject.Industry}"/>
+                    <apex:inputField value="{!accountObject.Description}"/>
+                    <apex:inputField value="{!accountObject.Type}"/>
+                    <!-- <apex:commandButton action="{!browseForAttachment}" value="Next"/> -->
+                    <!-- <apex:outputLink onclick="toggleView()">Next</apex:outputLink> -->
+                </apex:pageBlockSection>
+                <apex:commandButton value="Next" action="{!toggleView}" reRender="detailEdit,attachmentSection" />
+            </apex:pageBlock>
+        </apex:outputPanel>
+        <apex:outputPanel id="attachmentSection">
+            <apex:pageBlock rendered="{!toggle}">
+                Add Attachments to {!Account.Name}.
+                <apex:pageBlockSection >
+                    <apex:message />
+                    <apex:inputFile value="{!fileToUpload}" fileName="{!fileName}" />
+                    <apex:commandButton value="Save" action="{!saveAll}" />
+                </apex:pageBlockSection>
+            </apex:pageBlock>
+        </apex:outputPanel>
+    </apex:form>
+
+    <script>
+        function toggleView(){
+            AccountControllerExtension.toggleView(function(result,event){
+                if(event.status){
+                    console.log('1');
+                }else{
+                    alert('Nope');
+                }
+            })
+        }
+    </script>
+</apex:page>

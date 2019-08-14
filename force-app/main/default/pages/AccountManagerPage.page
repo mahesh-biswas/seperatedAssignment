@@ -1,0 +1,73 @@
+<apex:page id="mainPage" standardController="Account" recordSetVar="accounts" extensions="AccountManagerControllerExtension" >
+    <!-- <apex:image url="{!URLFOR($Resource.assignmentVF,'images/header-bg.jpg')}" alt="header-image-here"/> -->
+    <apex:image value="{!URLFOR($Resource.vfimagetest,'cats/kitten1.jpg')}" width="30"/>
+    <h1>Account Management</h1>
+    <apex:pageBlock id="pblock" title="Accounts:{!accountList.size}" >
+        <apex:form id="theSearchForm">
+            <apex:outputPanel id="clearField">
+                <apex:inputField value="{!accountObject.Site}" rendered="True" onkeypress="searchWithEnterKey(event)"/>
+                <apex:commandButton id="searchButton" action="{!searchFor}" value="Search" reRender="accountSection,searchErrorMessage" rendered="True"/>
+                <apex:commandLink action="{!clearAll}" value="Clear All" reRender="accountSection,clearField,searchErrorMessage" rendered="True"/>
+            </apex:outputPanel>
+        </apex:form>
+        <apex:form id="accountSection">
+            <apex:outputPanel >
+                <apex:messages rendered="{! OR(!renderList,renderLengthError)}"/>
+            </apex:outputPanel>
+            <apex:outputPanel style="float:right;">
+                <apex:repeat value="{!alphabetStrip}" var="alphabet">
+                        <apex:commandLink value="{!alphabet}" action="{!searchFor}" style="margin-right:10px;">
+                            <apex:param name="alphabet" value="{!alphabet}" assignTo="{!alphabet}"/>
+                        </apex:commandLink>
+                </apex:repeat>
+            </apex:outputPanel>
+            <apex:pageBlockTable value="{!accountList}" var="accountItr" rendered="{!renderList}">
+                <apex:column headerValue="Account Name">
+                    <a href="/{!accountItr.Id}" target="_blank">
+                        <apex:outputText value="{!accountItr.Name}"/>
+                    </a>
+                </apex:column>
+                <apex:column value="{!accountItr.Phone}"/>
+                <apex:column value="{!accountItr.Website}"/>
+                <apex:column >
+                    <apex:facet name="header">Action</apex:facet>
+                    <apex:commandLink onclick="deleteThisAccount('{!accountItr.Id}')" oncomplete="" reRender="accountSection,clearField,searchErrorMessage">
+                        Delete Account
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column >
+                    <apex:commandButton value="Manage Account"/>
+                </apex:column>
+            </apex:pageBlockTable>
+        </apex:form>
+    </apex:pageBlock>
+
+    <script>
+        function searchWithEnterKey(event){
+            var searchButtonReference = document.getElementById('{!$Component.mainPage.pblock.theSearchForm.searchButton}');
+            // console.log(searchButtonReference);
+            // console.log('wevent',window.event);
+            // console.log('keycode=',event.keyCode);
+            if(event.keyCode==13){
+                console.log(searchButtonReference);
+                searchButtonReference.click();
+                alert('loading...');
+            }
+        }
+        function deleteThisAccount(Id){
+            // alert(Id);
+            AccountManagerControllerExtension.deleteAccount(
+                                            Id,
+                                            function(result,event){
+                                                if(event.status){
+                                                    alert(result);
+                                                }else{
+                                                    console.log('error'+event);
+                                                }
+                                                console.log(event);
+                                                console.log(result);
+                                            });
+            return false;
+        }
+    </script>
+</apex:page>
