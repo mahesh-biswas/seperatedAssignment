@@ -14,10 +14,10 @@ global with sharing class SoapWebService {
         WRAPPER CLASS for Packing/Encapsulating Responses.
     */
     global class ResponseClass{
-        global Boolean isSuccess = False;
-        global String lead='';
-        global String status ='';
-        global List<Lead> payload;
+        webservice Boolean isSuccess = False;
+        webservice String lead='';
+        webservice String status ='';
+        webservice List<Lead> payload;
         public ResponseClass(List<Lead> payload){
             this.payload = payload;
         }
