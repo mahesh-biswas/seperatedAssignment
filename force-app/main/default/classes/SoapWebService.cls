@@ -46,7 +46,7 @@ global with sharing class SoapWebService {
             FROM
                 Lead
             LIMIT
-                200
+                100
         ]   );
     }
 
@@ -61,7 +61,8 @@ global with sharing class SoapWebService {
                 FirstName   =   firstName,
                 LastName    =   lastName,
                 Email       =   email,
-                Phone       =   phone
+                Phone       =   phone,
+                Company     =   'Company-name'
             );
             insert leadObjectToInsert;
             return new ResponseClass(true, SUCCESS, leadObjectToInsert.Id);
@@ -110,7 +111,7 @@ global with sharing class SoapWebService {
         String firstName, String lastName, String email, String phone
     ){
         try {
-            Lead leadObjectToDelete = [
+            List<Lead> leadObjectToDelete = [
                 SELECT
                     Id
                 FROM
@@ -121,8 +122,13 @@ global with sharing class SoapWebService {
                     AND Email = :email
                     AND Phone = :phone
             ];
-            delete leadObjectToDelete;
-            return new ResponseClass(true, SUCCESS, firstName);
+            if(leadObjectToDelete.size() > 0){
+                delete leadObjectToDelete;
+                return new ResponseClass(true, SUCCESS, firstName+' '+lastName);
+            }
+            else {
+                return new ResponseClass(false, 'No Record Found to DELETE!');
+            }
         } catch (DMLException dmlExceptionObject) {
             return new ResponseClass(false, dmlExceptionObject.getMessage());
         }
