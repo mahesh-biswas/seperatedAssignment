@@ -3,6 +3,7 @@
     <types>
         <members>RestWebProvider</members>
         <members>RestWebProviderTest</members>
+        <members>TestDataFactory</members>
         <name>ApexClass</name>
     </types>
     <version>46.0</version>

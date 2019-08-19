@@ -27,8 +27,11 @@ global with sharing class RestWebProvider{
         }
     }
 
+    /**
+        This is the Get Method for retrieving Lead Record.
+    */
     @HttpGet
-    global static List<Lead> getAccount(){
+    global static List<Lead> getLeads(){
         return [SELECT
                     Name,
                     Id,
@@ -39,9 +42,14 @@ global with sharing class RestWebProvider{
                     Lead
                 ORDER BY
                     CreatedDate DESC NULLS LAST
+                LIMIT
+                    100
         ];
     }
 
+    /**
+        This is the Post Method for adding Lead Record.
+    */
     @HttpPost
     global static ResponseClass addLead(
             String firstName, String lastName, String email, String phone, String company
@@ -56,7 +64,7 @@ global with sharing class RestWebProvider{
                 Company     =   company
             );
             insert leadObject;
-            responseObject = new ResponseClass(true,'Successfull',leadObject.Id);
+            responseObject = new ResponseClass(true, 'Successfull', leadObject.Id);
         }catch(DMLException exceptionDML){
             responseObject = new ResponseClass(
                 false,
@@ -66,6 +74,9 @@ global with sharing class RestWebProvider{
         return responseObject;
     }
 
+    /**
+        This is the Put Method for upserting Lead Record.
+    */
     @HttpPut
     global static ResponseClass upsertLead(
         String id, String firstName, String lastName, String email , String phone, String company
@@ -83,7 +94,7 @@ global with sharing class RestWebProvider{
                     Company     =   company
                 );
             } catch (Exception exceptionObject) {
-                responseObject = new ResponseClass(false,exceptionObject.getMessage());
+                responseObject = new ResponseClass(false, exceptionObject.getMessage());
                 return responseObject;
             }
         }
@@ -98,7 +109,7 @@ global with sharing class RestWebProvider{
         }
         try {
             upsert leadObjectToInsert;
-            responseObject = new ResponseClass(true,'Successfull',leadObjectToInsert.Id);
+            responseObject = new ResponseClass(true, 'Successfull', leadObjectToInsert.Id);
         } catch (DMLException dmlExceptionObject) {
             responseObject = new ResponseClass(
                 false,
@@ -108,6 +119,9 @@ global with sharing class RestWebProvider{
         return responseObject;
     }
 
+    /**
+        This is the Patch Method for updating Lead Record.
+    */
     @HttpPatch
     global static ResponseClass updateLead(
         String id, String firstName, String lastName, String email, String phone, String company
@@ -135,6 +149,9 @@ global with sharing class RestWebProvider{
         return responseObject;
     }
 
+    /**
+        This is the Delete Method deleteing <> Lead Record.
+    */
     @HttpDelete
     global static ResponseClass deleteLead(){
         ResponseClass responseObject;
@@ -158,7 +175,7 @@ global with sharing class RestWebProvider{
                 return responseObject;
             }
             delete leadListToDelete;
-            responseObject = new ResponseClass(true, 'Successfull',id);
+            responseObject = new ResponseClass(true, 'Successfull', id);
         } catch (DMLException dmlExceptionObject) {
             responseObject = new ResponseClass(
                 false,

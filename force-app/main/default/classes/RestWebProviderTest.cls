@@ -14,7 +14,7 @@ public with sharing class RestWebProviderTest {
     */
     @isTest
     public static void getMethodTest(){
-        List<Lead> leadList = TestDataFactory.createLeadWithFirstname(200,'firstname',True);
+        List<Lead> leadList = TestDataFactory.createLead(200, false);
         for (Lead leadItr : leadList) {
             leadItr.Company = 'The Company Name';
             leadItr.LastName = 'lastName';
@@ -23,9 +23,11 @@ public with sharing class RestWebProviderTest {
         }
         insert leadList;
         Map<ID, Lead> leadIdMap = new Map<ID, Lead>(leadList);
+
         System.Test.startTest();
-        List<Lead> leadListResult = RestWebProvider.getAccount();
+        List<Lead> leadListResult = RestWebProvider.getLeads();
         System.Test.stopTest();
+
         System.assertEquals(
             leadList.size(),
             leadListResult.size(),
@@ -49,6 +51,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -76,6 +79,7 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void postMethodTest_NegativeCaseInsertionFailed(){
         RestWebProvider.ResponseClass responseWrapperObject;
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.addLead(
             'Dummy FirstName',
@@ -85,6 +89,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertNotEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -105,8 +110,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void patchMethodTest_PositiveCase() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.updateLead(
             leadList[0].Id,
@@ -117,6 +122,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -137,8 +143,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void patchMethodTest_NegativeCaseInvalidEmail() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.updateLead(
             leadList[0].Id,
@@ -149,6 +155,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertNotEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -169,8 +176,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void patchMethodTest_NegativeCaseNoId() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.updateLead(
             null,
@@ -181,6 +188,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertNotEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -201,8 +209,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void patchMethodTest_NegativeCaseNoLastName() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.updateLead(
             leadList[0].Id,
@@ -213,6 +221,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertNotEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -233,6 +242,7 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void putMethodTest_PositiveCaseInsertion() {
         RestWebProvider.ResponseClass responseWrapperObject;
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.upsertLead(
             '',
@@ -243,6 +253,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -263,8 +274,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void putMethodTest_PositiveCaseUpdation() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.upsertLead(
             leadList[0].Id,
@@ -275,6 +286,7 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
+
         System.assertEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -295,8 +307,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void putMethodTest_NegativeCase() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.upsertLead(
             'InvalidId',
@@ -307,7 +319,8 @@ public with sharing class RestWebProviderTest {
             'The Dummy Company'
         );
         System.Test.stopTest();
-        System.debug('exceptions is: '+responseWrapperObject);
+
+        System.debug('exceptions is: ' + responseWrapperObject);
         System.assertEquals(
             true,
             responseWrapperObject.message.contains('Invalid id'),
@@ -333,8 +346,8 @@ public with sharing class RestWebProviderTest {
     @isTest
     public static void deleteMethodTest_PositiveCase() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
+
         RestRequest request = new RestRequest();
         request.requestUri =
             'https://ap15.salesforce.com/services/apexrest/leads?id='
@@ -343,9 +356,11 @@ public with sharing class RestWebProviderTest {
         request.addHeader('Content-Type', 'application/json');
         request.params.put('id', leadList[0].Id);
         RestContext.request = request;
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.deleteLead();
         System.Test.stopTest();
+
         List<Lead> leadListAfterDeletion = [
             SELECT
                 Id,
@@ -356,7 +371,7 @@ public with sharing class RestWebProviderTest {
                 Id = :leadList[0].Id
             LIMIT 1
         ];
-        System.debug(leadListAfterDeletion+'..................: '+responseWrapperObject);
+        System.debug(leadListAfterDeletion+'..................: ' + responseWrapperObject);
         System.assertEquals(
             true,
             responseWrapperObject.isSuccess,
@@ -377,26 +392,28 @@ public with sharing class RestWebProviderTest {
     /**
         This tests the delete method of this rest web service;
 
-        CASE:  Positive Case - Successfull Deletion.
+        CASE:  Negative Case - Failed Deletion, Record not exist.
     */
     @isTest
     public static void deleteMethodTest_NegativeCaseFailedDeletion() {
         RestWebProvider.ResponseClass responseWrapperObject;
-        List<Lead> leadList = TestDataFactory.createLeadWithName(10, 'the Name', true);
-        insert leadList;
+        List<Lead> leadList = TestDataFactory.createLead(10, true);
         RestRequest request = new RestRequest();
         request.requestUri =
-            'https://ap15.salesforce.com/services/apexrest/leads?id='
-            + leadList[0].Id;
+            'https://ap15.salesforce.com/services/apexrest/leads?id=' +
+            leadList[0].Id;
         request.httpMethod = 'DELETE';
         request.addHeader('Content-Type', 'application/json');
         request.params.put('id', 'invalidId');
         RestContext.request = request;
+
         delete leadList[0];
+
         System.Test.startTest();
         responseWrapperObject = RestWebProvider.deleteLead();
         System.Test.stopTest();
-        System.debug('..................: '+responseWrapperObject);
+
+        System.debug('..................: ' + responseWrapperObject);
         System.assertNotEquals(
             true,
             responseWrapperObject.isSuccess,
