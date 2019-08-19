@@ -16,20 +16,15 @@ public with sharing class GenericRecordCreationEngine {
             Insert that List.
         */
         List<SObject> sObjectListToInsert = new List<SObject>();
-        List<Event__c> eventList = [
-            Select
-                Name,
-                JSON__C,
-                Id
-            FROM
-                Event__c
-            WHERE
-                Record_Added__c = False
-        ];
+        List<Event__c> eventList = [  Select  Name
+                                            ,JSON__C
+                                            ,Id
+                                    FROM    Event__c
+                                    WHERE   Record_Added__c = False
+                                ];
         for (Event__c eventItr : eventList ){
-            Type objectType = Type.forName('List<' + eventItr.Name + '>');
-            List<SObject> deserializedObjectList =
-                (List<SObject>)JSON.deserialize(eventItr.JSON__C, objectType);
+            Type objectType = Type.forName('List<'+eventItr.Name+'>');
+            List<SObject> deserializedObjectList = (List<SObject>)JSON.deserialize(eventItr.JSON__C, objectType);
             System.debug(deserializedObjectList);
             sObjectListToInsert.addAll(deserializedObjectList);
         }
@@ -42,14 +37,7 @@ public with sharing class GenericRecordCreationEngine {
         } catch (Exception exp) {
             System.debug(exp);
         }
-        // Database.SaveResult[] saveResultList = Database.insert(deserializedObjectList, false);
-        // Map<Id,sObject> deserializedObjectInsertedMap = new Map<Id,sObject>(deserializedObjectList);
-        // for (Database.SaveResult saveResultItr : saveResultList) {
-        //     if(saveResultItr.isSuccess()){
-        //         deserializedObjectInsertedMap.get(saveResultItr.getId()).
-        //     }
-        // }
-        System.debug('debug:desAllInsert::'+sObjectListToInsert);
+        System.debug('insert::'+sObjectListToInsert);
         return sObjectListToInsert;
     }
 }
