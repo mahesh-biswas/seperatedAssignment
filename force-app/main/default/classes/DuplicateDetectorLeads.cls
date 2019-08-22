@@ -1,9 +1,23 @@
+/**
+ * @File Name          : DuplicateDetectorLeads.cls
+ * @Description        : 
+ * @Author             : Mahesh Biswas
+ * @Group              : 
+ * @Last Modified By   : Mahesh Biswas
+ * @Last Modified On   : 8/22/2019, 12:38:46 PM
+ * @Modification Log   : 
+ *==============================================================================
+ * Ver         Date                     Author      		      Modification
+ *==============================================================================
+ * 1.0    8/22/2019, 12:29:36 PM   Mahesh Biswas     Initial Version
+**/
 global with sharing class DuplicateDetectorLeads implements
     Database.Batchable<sObject>,
     Database.Stateful
 {
     Integer countTheRecordsDeleted = 0;
     global Database.QueryLocator start(Database.BatchableContext bc) {
+        System.debug('Dup_name: '+DuplicateSetting__c.getInstance().Name__c+'Dup_email: '+DuplicateSetting__c.getInstance().Email__c+'Dup_Keep1st: '+DuplicateSetting__c.getInstance().Keep_First_Record__c);
         return Database.getQueryLocator(    [
             SELECT
                 Id,
@@ -11,9 +25,6 @@ global with sharing class DuplicateDetectorLeads implements
                 Email
             FROM
                 Lead
-            ORDER BY
-                Name,
-                Email
         ]   );
     }
 
@@ -28,11 +39,16 @@ global with sharing class DuplicateDetectorLeads implements
                 DuplicateSetting__c.getInstance().Email__c
             ){
                 // TODO: use some flags maybe
+                // HOW about this approach?
+                key = leadItr.Name+':'+leadItr.Email;
             }else if(DuplicateSetting__c.getInstance().Name__c){
                 key = leadItr.Name;
             }else if(DuplicateSetting__c.getInstance().Email__c){
-                if(leadItr.Email!=null)
+                if(!String.isBlank(leadItr.Email)){
                     key = leadItr.Email;
+                }else{
+                    continue;
+                }
             }
             if(keyToLeadListMap.containsKey(key)){
                 List<Lead> retrievedFromMap = keyToLeadListMap.get(key);

@@ -1,3 +1,16 @@
+/**
+ * @File Name          : TestDataFactory.cls
+ * @Description        : 
+ * @Author             : Mahesh Biswas
+ * @Group              : 
+ * @Last Modified By   : Mahesh Biswas
+ * @Last Modified On   : 8/22/2019, 12:32:47 PM
+ * @Modification Log   : 
+ *==============================================================================
+ * Ver         Date                     Author      		      Modification
+ *==============================================================================
+ * 1.0    8/22/2019, 12:32:32 PM   Mahesh Biswas     Initial Version
+**/
 @isTest
 public with sharing class TestDataFactory {
     public static List<Account> createAccountWithName(
@@ -178,7 +191,7 @@ public with sharing class TestDataFactory {
         List<Opportunity> opportunityList = new List<Opportunity>();
         for(Integer count=0; count<numberOfRecords; count++){
             opportunityList.add(new Opportunity(
-                Name        =   'opportunity name',
+                Name        =   'opportunityName',
                 StageName   =   '--None--',
                 CloseDate   =   System.today()+Integer.valueOf(Math.random()*365)
             ));
@@ -195,7 +208,7 @@ public with sharing class TestDataFactory {
         List<Account> accountList = new List<Account>();
         for(Integer count=0; count<numberOfRecords; count++){
             accountList.add(new Account(
-                Name    =   'account Name'
+                Name    =   'accountName'
             ));
         }
         if(isInsert)
@@ -210,7 +223,7 @@ public with sharing class TestDataFactory {
         List<Contact> contactList = new List<Contact>();
         for(Integer count=0; count<numberOfRecords; count++){
             contactList.add(new Contact(
-                LastName    =   'contact LastName'
+                LastName    =   'contactLastName'
             ));
         }
         if(isInsert)
@@ -225,7 +238,7 @@ public with sharing class TestDataFactory {
         List<Lead> leadList = new List<Lead>();
         for(Integer count=0; count<numberOfRecords; count++){
             leadList.add(new Lead(
-                LastName    =   'lead LastName',
+                LastName    =   'leadLastName',
                 Company     =   'a very fake company INC.'
             ));
         }
