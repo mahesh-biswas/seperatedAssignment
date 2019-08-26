@@ -4,7 +4,7 @@
  * @Author             : Mahesh Biswas
  * @Group              : 
  * @Last Modified By   : Mahesh Biswas
- * @Last Modified On   : 8/22/2019, 12:32:47 PM
+ * @Last Modified On   : 8/26/2019, 3:31:24 PM
  * @Modification Log   : 
  *==============================================================================
  * Ver         Date                     Author      		      Modification
@@ -245,5 +245,19 @@ public with sharing class TestDataFactory {
         if(isInsert)
             insert leadList;
         return leadList;
+    }
+
+    public static List<Event__c> createEvent(Integer numberOfRecords, Boolean isInsert){
+        List<Event__c> eventList = new List<Event__c>();
+        for(Integer count=0; count<numberOfRecords; count++){
+            eventList.add(new Event__c(
+                Record_Added__c = false,
+                JSON__c         = '{}',
+                Name            = ''
+            ));
+        }
+        if(isInsert)
+            insert eventList;
+        return eventList;
     }
 }
