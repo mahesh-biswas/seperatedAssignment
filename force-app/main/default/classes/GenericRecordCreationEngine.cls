@@ -21,45 +21,53 @@ public with sharing class GenericRecordCreationEngine {
             Select
                 Name,
                 JSON__C,
-                Id
+                Id,
+                Error__c
             FROM
                 Event__c
             WHERE
                 Record_Added__c = False
         ];
+        Type objectType = null;
+        List<SObject> deserializedObjectList;
+        Integer integerItr = 0;
+        List<Integer> newEventOccuringIndexList = new List<Integer>();
         for (Event__c eventItr : eventList ){
-            Type objectType = Type.forName('List<'+eventItr.Name+'>');
-            List<SObject> deserializedObjectList =
+            eventItr.Error__c = '';
+            objectType = Type.forName('List<'+eventItr.Name+'>');
+            deserializedObjectList =
                 (List<SObject>) JSON.deserialize(eventItr.JSON__C, objectType);
             System.debug(deserializedObjectList);
             sObjectListToInsert.addAll(deserializedObjectList);
+            integerItr+=deserializedObjectList.size();
+            newEventOccuringIndexList.add(integerItr);
         }
+        System.debug('list Indexes: '+newEventOccuringIndexList);
         List<Database.saveResult> saveResultList =
                 Database.insert(sObjectListToInsert, false);
-        Integer intItr = 0;
+        integerItr = 0;
+        Integer eventIndexCounterInteger = 0;
+        Integer withinEventJsonObjectCounter=0;
         for(Database.saveResult saveResultItr : saveResultList){
+            if(newEventOccuringIndexList.contains(
+                        integerItr
+            )   ){
+                newEventOccuringIndexList.remove(0);
+                eventIndexCounterInteger++;
+                withinEventJsonObjectCounter = 0;
+            }
             if(saveResultItr.isSuccess()){
-                eventList[intItr].Record_Added__c = true;
+                eventList[eventIndexCounterInteger].Record_Added__c = true;
             }else{
                 for(Database.Error err : saveResultItr.getErrors()) {
-                    eventList[intItr].Error__c += err.getMessage()+'\n';
+                    eventList[eventIndexCounterInteger].Error__c +=
+                        ' for object '+withinEventJsonObjectCounter+': '+err.getMessage()+'\n';
                 }
             }
-            intItr++;
+            withinEventJsonObjectCounter++;
+            integerItr++;
         }
-        try {
-            update eventList;
-        } catch (DMLException dmlExceptionObject) {
-            System.debug(dmlExceptionObject);
-        }
-        // Database.SaveResult[] saveResultList = Database.insert(deserializedObjectList, false);
-        // Map<Id,sObject> deserializedObjectInsertedMap = new Map<Id,sObject>(deserializedObjectList);
-        // for (Database.SaveResult saveResultItr : saveResultList) {
-        //     if(saveResultItr.isSuccess()){
-        //         deserializedObjectInsertedMap.get(saveResultItr.getId()).
-        //     }
-        // }
-        System.debug('debug:desAllInsert::'+sObjectListToInsert);
+        Database.update(eventList, false);
         return sObjectListToInsert;
     }
 }

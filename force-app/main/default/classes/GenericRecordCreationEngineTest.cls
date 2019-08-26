@@ -2,10 +2,8 @@
  * @File Name          : GenericRecordCreationEngineTest.cls
  * @Description        : 
  * @Author             : Mahesh Biswas
- * @Group              : 
  * @Last Modified By   : Mahesh Biswas
- * @Last Modified On   : 8/26/2019, 4:00:05 PM
- * @Modification Log   : 
+ * @Last Modified On   : 8/26/2019, 7:31:23 PM
  *==============================================================================
  * Ver         Date                     Author      		      Modification
  *==============================================================================
@@ -40,7 +38,6 @@ public with sharing class GenericRecordCreationEngineTest {
         System.Test.startTest();
             new GenericRecordCreationEngine().createRecord();
         System.Test.stopTest();
-        System.debug('......result: '+eventList);
         Integer totalAccountRecordCount = [
             SELECT
                 count()
@@ -61,7 +58,7 @@ public with sharing class GenericRecordCreationEngineTest {
     */
     @isTest
     public static void createRecord_Negative(){
-        List<Event__c> eventList = TestDataFactory.createEvent(1, false);
+        List<Event__c> eventList = TestDataFactory.createEvent(2, false);
         String jsonFormatAccountRecordDetails = '['+
             '{'+
             '    "Description": "Added From Event Object"'+
@@ -71,10 +68,20 @@ public with sharing class GenericRecordCreationEngineTest {
             '    "Description": "Added From Event Object"'+
             '}'+
         ']';
+        String jsonFormatAccountRecordDetailsPassing = '['+
+            '{'+
+            '    "Name": "Account success",'+
+            '    "Description": "Added From Event Object"'+
+            '},'+
+            '{'+
+            '    "Description": "Added From Event Object"'+
+            '}'+
+        ']';
         for(Event__c eventItr : eventList){
             eventItr.Name = 'Account';
             eventItr.JSON__c = jsonFormatAccountRecordDetails;
         }
+        eventList[1].JSON__c = jsonFormatAccountRecordDetailsPassing;
         Database.insert(eventList, false);
         System.Test.startTest();
             new GenericRecordCreationEngine().createRecord();
@@ -85,12 +92,10 @@ public with sharing class GenericRecordCreationEngineTest {
             From
                 Account
         ];
-        System.debug(totalAccountRecordCount+'......result: '+eventList);
-        System.debug('......accounts: '+[SELECT Name,Id,Description FROM Account]);
         System.assertNotEquals(
-            2,
+            4,
             totalAccountRecordCount,
-            'Exactly 2 account to be created successfully.'
+            'All 4 Account Records won\'t be added successfully. some have missing required fields.'
         );
     }
 }
